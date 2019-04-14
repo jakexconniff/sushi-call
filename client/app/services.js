@@ -6,7 +6,7 @@ export async function twilioToken() {
   return token.data;
 }
 
-export async function sendCall(toNumber) {
-  const call = await axios.post(`${baseUrl}/sendCall`, toNumber);
+export async function sendCall(numbers) {
+  const call = await axios.post(`${baseUrl}/sendCall`, numbers);
   return;
 }

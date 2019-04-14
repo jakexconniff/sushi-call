@@ -20,7 +20,15 @@ export default class CallForm extends React.Component {
     // This is how you would send a "real" call that would be browser to phone with a real conversation.
     // this.state.TwilioDevice.connect({ toNumber: this.props.toNumberCall});
     // However, in this example, we are going to send a request to our API that will send a pre-recorded message to the selected phone number.
-    let callResults = await sendCall({ toNumber: this.props.toNumberCall });
+    if (!this.props.toNumberCall || this.props.toNumberCall.length < 10) {
+      console.log('Improper "To" number provided for Call.');
+      return;
+    }
+    if (!this.props.fromNumberCall || this.props.fromNumberCall.length < 10) {
+      console.log('Improper "From" number provided for Call.');
+      return;
+    }
+    let callResults = await sendCall({ toNumber: this.props.toNumberCall, fromNumber: this.props.fromNumberCall });
   }
 
   render() {
