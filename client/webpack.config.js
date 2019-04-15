@@ -14,7 +14,7 @@ module.exports = {
       { test: /\.less$/, use: [ 'style-loader', 'css-loader', 'less-loader'] }
     ]
   },
-  mode: 'development',
+  mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
   plugins: [
     new HtmlWebpackPlugin({
       template: 'app/index.html'
