@@ -28,7 +28,16 @@ export default class CallForm extends React.Component {
       console.log('Improper "From" number provided for Call.');
       return;
     }
-    let callResults = await sendCall({ toNumber: this.props.toNumberCall, fromNumber: this.props.fromNumberCall });
+    if (!this.props.callMessage) {
+      console.log('Please provide a message for Call.');
+      return;
+    }
+    const callObject = {
+      toNumber: this.props.toNumberCall,
+      fromNumber: this.props.fromNumberCall,
+      callMessage: this.props.callMessage
+    };
+    const callResults = await sendCall(callObject);
   }
 
   render() {
@@ -42,6 +51,9 @@ export default class CallForm extends React.Component {
             />
             <FormControlLabel
               control={<NumberInput head="TO" value={this.props.toNumberCall} onChange={() => {this.props.onChange(event, 'toNumberCall')}} />}
+            />
+            <FormControlLabel
+              control={<TextInput head="MESSAGE" value={this.props.callMessage} onChange={() => {this.props.onChange(event, 'callMessage')}} />}
             />
           </FormGroup>
           <SendCallButton sendCall={this.sendCall} />
@@ -66,6 +78,24 @@ export const NumberInput = ({ head, value, onChange }) => {
     />
   );
 }
+
+export const TextInput = ({ head, value, onChange }) => {
+  return (
+    
+    <TextField
+      onChange={onChange}
+      id="outlined-name"
+      multiline={true}
+      rows="4"
+      label={head}
+      className=""
+      value={value}
+      margin="normal"
+      variant="outlined"
+    />
+  );
+}
+
 
 export const SendCallButton = ({ sendCall }) => {
   return (

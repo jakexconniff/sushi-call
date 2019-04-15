@@ -20,7 +20,9 @@ class App extends Component {
       toNumberCall: '',
       fromNumberCall: '',
       toNumberText: '',
-      fromNumberText: ''
+      fromNumberText: '',
+      callMessage: '',
+      textMessage: ''
     };
     // We need this here so that handleChange can be passed to the other components and still affect the above state.
     this.handleChange = this.handleChange.bind(this);
@@ -35,15 +37,12 @@ class App extends Component {
     return TwilioDevice;
   }
 
-  componentDidUpdate() {
-  }
-
   handleChange(event, target) {
     event.preventDefault();
 
     this.setState(() => ({
       [target]: event.target.value,
-    }))
+    }));
   }
 
   handlePhoneInput(event, target) {
@@ -76,6 +75,7 @@ class App extends Component {
                     fromNumberCall={this.state.fromNumberCall}
                     toNumberText={this.state.toNumberText}
                     fromNumberText={this.state.fromNumberText}
+                    callMessage={this.state.callMessage}
                     onChange={this.handleChange}
                     // We can re-add this back in to the CallForm component when we are ready to use Twilio JS client 🤘
                     // initTwilio={this.initTwilio}
