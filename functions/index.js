@@ -18,6 +18,7 @@ const VoiceGrant = AccessToken.VoiceGrant;
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const qs = require('querystring');
 app.use(cors());
 
 app.get('/token', (request, response) => {
@@ -35,14 +36,18 @@ app.get('/token', (request, response) => {
 
 app.post('/sendCall', async (request, response) => {
   console.log(`Hit /sendCall.`);
-  let toNumber = request.body.toNumber;
+  const toNumber = request.body.toNumber;
   if (!toNumber) {
     return response.status(400).json({ error: 'No toNumber provided!' });
   }
   // If toNumber does not have the format "+1xxxyyyy", make it that.
-  let fromNumber = request.body.fromNumber;
+  const fromNumber = request.body.fromNumber;
   if (!fromNumber) {
     return response.status(400).json({ error: 'No fromNumber provided!' });
+  }
+  const callMessage = request.body.callMessage;
+  if (!callMessage) {
+    return response.status(400).json({ error: 'No callMessage provided!' });
   }
   // If fromNumber does not have the format "+1xxxyyyy", make it that.
   let scrubbedTo = normalizeNumber(toNumber);
@@ -52,8 +57,9 @@ app.post('/sendCall', async (request, response) => {
     scrubbedTo = '+18603845435';
   }
   console.log(`Dialing ${scrubbedTo} from ${scrubbedFrom}.`);
+  const encodedMessage = qs.escape(callMessage);
   let call = await client.calls.create({
-    url: `https://unwavering-emotions.ngrok.io/callTwiml`,
+    url: `https://unwavering-emotions.ngrok.io/callTwiml?message=${encodedMessage}`,
     from: scrubbedFrom,
     to: scrubbedTo
   });
@@ -73,7 +79,8 @@ app.post('/sendCall', async (request, response) => {
 
 app.post('/callTwiml', (request, response) => {
   console.log('Hit /callTwiml')
-  return response.send('<?xml version="1.0" encoding="UTF-8"?><Response><Say>Example call text.</Say></Response>');
+  const message = qs.unescape(request.query.message);
+  return response.send(`<?xml version="1.0" encoding="UTF-8"?><Response><Say>${message}</Say></Response>`);
 });
 
 exports.token = functions.https.onRequest(app);
