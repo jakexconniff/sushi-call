@@ -1,17 +1,16 @@
 require('dotenv').config();
-const functions = require('firebase-functions');
-const TEST_MODE = process.env.TEST_MODE || functions.config().general.test_mode;
-const outgoingApplicationSid = functions.config().twilio.app_sid || process.env.TWILIO_APP_SID;
+const TEST_MODE = process.env.TEST_MODE;
+const outgoingApplicationSid = process.env.TWILIO_APP_SID;
 let twilioAccountSid, twilioAuthToken;
 if (TEST_MODE === 'false') {
-  twilioAccountSid = functions.config().twilio.account_sid || process.env.TWILIO_ACCOUNT_SID;
-  twilioAuthToken = functions.config().twilio.auth_token || process.env.TWILIO_AUTH_TOKEN;
+  twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+  twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
 } else {
   twilioAccountSid = process.env.TWILIO_TEST_ACCOUNT_SID;
   twilioAuthToken = process.env.TWILIO_TEST_AUTH_TOKEN;
 }
-const twilioApiKey = functions.config().twilio.api_key || process.env.TWILIO_API_KEY;
-const twilioApiSecret = functions.config().twilio.api_secret || process.env.TWILIO_API_SECRET;
+const twilioApiKey = process.env.TWILIO_API_KEY;
+const twilioApiSecret = process.env.TWILIO_API_SECRET;
 const client = require(`twilio`)(twilioAccountSid, twilioAuthToken);
 const AccessToken = require('twilio').jwt.AccessToken;
 const VoiceGrant = AccessToken.VoiceGrant;
@@ -19,7 +18,9 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const qs = require('querystring');
+const bodyParser = require('body-parser');
 app.use(cors());
+app.use(bodyParser.json())
 
 app.get('/token', (request, response) => {
   const identity = 'user';
@@ -35,7 +36,6 @@ app.get('/token', (request, response) => {
 });
 
 app.post('/sendCall', async (request, response) => {
-  console.log(`Hit /sendCall.`);
   const toNumber = request.body.toNumber;
   if (!toNumber) {
     return response.status(400).json({ error: 'No toNumber provided!' });
@@ -83,12 +83,6 @@ app.post('/callTwiml', (request, response) => {
   return response.send(`<?xml version="1.0" encoding="UTF-8"?><Response><Say>${message}</Say></Response>`);
 });
 
-exports.token = functions.https.onRequest(app);
-
-exports.sendCall = functions.https.onRequest(app);
-
-exports.callTwiml = functions.https.onRequest(app);
-
 function normalizeNumber(number) {
   if (number.length < 10) {
     console.log(`normalizeNumber failed: number not long enough! (${number})`);
@@ -106,3 +100,6 @@ function normalizeNumber(number) {
   console.log(`Normalize number failed for the following number: ${number}`);
   return null;
 }
+
+console.log('Server listening on port 5000.');
+app.listen(5000);
