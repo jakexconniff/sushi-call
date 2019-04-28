@@ -59,7 +59,7 @@ app.post('/sendCall', async (request, response) => {
   console.log(`Dialing ${scrubbedTo} from ${scrubbedFrom}.`);
   const encodedMessage = qs.escape(callMessage);
   let call = await client.calls.create({
-    url: `https://unwavering-emotions.ngrok.io/callTwiml?message=${encodedMessage}`,
+    url: `http://34.74.204.220/callTwiml?message=${encodedMessage}`,
     from: scrubbedFrom,
     to: scrubbedTo
   });

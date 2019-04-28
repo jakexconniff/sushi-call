@@ -1,6 +1,6 @@
-var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+console.log(path.resolve(__dirname, 'dist'))
 module.exports = {
   entry: ['@babel/polyfill', './app/index.js'],
   output: {
