@@ -1,12 +1,11 @@
 const axios = require('axios');
-const baseUrl = 'http://localhost:5000';
 
 export async function twilioToken() {
-  const token = await axios.get(`${baseUrl}/token`);
+  const token = await axios.get(`/token`);
   return token.data;
 }
 
 export async function sendCall(numbers) {
-  const call = await axios.post(`${baseUrl}/sendCall`, numbers);
+  const call = await axios.post(`/sendCall`, numbers);
   return;
 }
