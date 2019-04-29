@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: server
-          image: jakexconniff/sushi-call-server:1.0.1
+          image: jakexconniff/sushi-call-server:1.0.4

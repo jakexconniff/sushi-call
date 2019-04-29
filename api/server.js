@@ -1,4 +1,6 @@
 require('dotenv').config();
+const fs = require('fs');
+const https = require('https');
 const TEST_MODE = process.env.TEST_MODE;
 const outgoingApplicationSid = process.env.TWILIO_APP_SID;
 let twilioAccountSid, twilioAuthToken;
@@ -101,5 +103,16 @@ function normalizeNumber(number) {
   return null;
 }
 
-console.log('Server listening on port 5000.');
-app.listen(5000);
+const sslOptions = {
+  key: fs.readFileSync('./server.key'),
+  cert: fs.readFileSync('./server.cert')
+}
+
+const port = 5000;
+
+const server = https.createServer(sslOptions, app).listen(port, function(){
+  console.log("Express server listening on port " + port);
+});
+
+app.listen(3000);
+console.log('HTTP server running on port 3000.');

@@ -1,5 +1,5 @@
 const axios = require('axios');
-const baseUrl = 'http://34.74.204.220';
+const baseUrl = 'https://34.74.239.31';
 
 export async function twilioToken() {
   const token = await axios.get(`${baseUrl}/token`);
